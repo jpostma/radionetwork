@@ -1,0 +1,95 @@
+;
+; RadioNetwork.inf
+;
+
+[Version]
+Signature="$WINDOWS NT$"
+Class=Net
+ClassGuid={78A1C341-4539-11d3-B88D-00C04FAD5171}
+Provider=%ManufacturerName%
+CatalogFile=RadioNetwork.cat
+DriverVer=02/20/2015,17.36.28.476
+
+[DestinationDirs]
+DefaultDestDir = 12
+
+; ================= Class section =====================
+
+;[ClassInstall32]
+;Addreg=SampleClassReg
+
+;[SampleClassReg]
+;HKR,,,0,%ClassName%
+;HKR,,Icon,,-5
+
+[SourceDisksNames]
+1 = %DiskName%,,,""
+
+[SourceDisksFiles]
+RadioNetwork.sys  = 1,,
+
+;*****************************************
+; Install Section
+;*****************************************
+
+[Manufacturer]
+%ManufacturerName%=Standard,NTamd64
+
+[Standard.NTamd64]
+%RadioNetwork.DeviceDesc%=RadioNetwork_Device, Root\RadioNetwork ; TODO: edit hw-id
+
+[RadioNetwork_Device.NT]
+CopyFiles=Drivers_Dir
+
+[Drivers_Dir]
+RadioNetwork.sys
+
+;-------------- Service installation
+[RadioNetwork_Device.NT.Services]
+AddService = RadioNetwork,2, RadioNetwork_Service_Inst
+
+; -------------- RadioNetwork driver install sections
+[RadioNetwork_Service_Inst]
+DisplayName    = %RadioNetwork.SVCDESC%
+ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
+StartType      = 3               ; SERVICE_DEMAND_START
+ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\RadioNetwork.sys
+LoadOrderGroup = Extended Base
+
+;
+;--- RadioNetwork_Device Coinstaller installation ------
+;
+
+[DestinationDirs]
+RadioNetwork_Device_CoInstaller_CopyFiles = 11
+
+[RadioNetwork_Device.NT.CoInstallers]
+AddReg=RadioNetwork_Device_CoInstaller_AddReg
+CopyFiles=RadioNetwork_Device_CoInstaller_CopyFiles
+
+[RadioNetwork_Device_CoInstaller_AddReg]
+HKR,,CoInstallers32,0x00010000, "WdfCoInstaller01011.dll,WdfCoInstaller"
+HKR,    ,                         BusNumber,           0, "0" 
+HKR, Ndi,                         Service,             0, "NetVMini60"
+HKR, Ndi\Interfaces,              UpperRange,          0, "ndis5"
+HKR, Ndi\Interfaces,              LowerRange,          0, "ethernet"
+
+
+[RadioNetwork_Device_CoInstaller_CopyFiles]
+WdfCoInstaller01011.dll
+
+[SourceDisksFiles]
+WdfCoInstaller01011.dll=1 ; make sure the number matches with SourceDisksNames
+
+[RadioNetwork_Device.NT.Wdf]
+KmdfService =  RadioNetwork, RadioNetwork_wdfsect
+[RadioNetwork_wdfsect]
+KmdfLibraryVersion = 1.11
+
+[Strings]
+ManufacturerName="" ; TODO: add ManufacturerName
+#ClassName="Samples" ; TODO: edit ClassName
+DiskName = "RadioNetwork Installation Disk"
+RadioNetwork.DeviceDesc = "RadioNetwork Device"
+RadioNetwork.SVCDESC = "RadioNetwork Service"
