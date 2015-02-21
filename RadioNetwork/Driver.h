@@ -18,6 +18,7 @@ Environment:
 
 #include <ntddk.h>
 #include <wdf.h>
+#include <ndis.h>
 
 #include "device.h"
 #include "queue.h"

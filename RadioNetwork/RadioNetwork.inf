@@ -4,8 +4,8 @@
 
 [Version]
 Signature="$WINDOWS NT$"
-Class=Net
-ClassGuid={78A1C341-4539-11d3-B88D-00C04FAD5171}
+Class=Radio
+ClassGuid={1063A1A3-6736-4973-B0F2-35B599618DC5}
 Provider=%ManufacturerName%
 CatalogFile=RadioNetwork.cat
 DriverVer= ; TODO: set DriverVer in stampinf property pages
@@ -15,12 +15,12 @@ DefaultDestDir = 12
 
 ; ================= Class section =====================
 
-;[ClassInstall32]
-;Addreg=SampleClassReg
+[ClassInstall32]
+Addreg=SampleClassReg
 
-;[SampleClassReg]
-;HKR,,,0,%ClassName%
-;HKR,,Icon,,-5
+[SampleClassReg]
+HKR,,,0,%ClassName%
+HKR,,Icon,,-5
 
 [SourceDisksNames]
 1 = %DiskName%,,,""
@@ -88,8 +88,8 @@ KmdfService =  RadioNetwork, RadioNetwork_wdfsect
 KmdfLibraryVersion = $KMDFVERSION$
 
 [Strings]
-ManufacturerName="" ; TODO: add ManufacturerName
-#ClassName="Samples" ; TODO: edit ClassName
+ManufacturerName="Johan" ; TODO: add ManufacturerName
+ClassName=Radio networks
 DiskName = "RadioNetwork Installation Disk"
 RadioNetwork.DeviceDesc = "RadioNetwork Device"
 RadioNetwork.SVCDESC = "RadioNetwork Service"

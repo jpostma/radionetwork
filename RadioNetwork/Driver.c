@@ -7,6 +7,9 @@
 #pragma alloc_text (PAGE, RadioNetworkEvtDriverContextCleanup)
 #endif
 
+//MP_GLOBAL       GlobalData;
+LIST_ENTRY g_globalAdapters;
+NPAGED_LOOKASIDE_LIST   FrameDataLookaside;
 
 NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT  DriverObject,_In_ PUNICODE_STRING RegistryPath)
 {
@@ -21,6 +24,18 @@ NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT  DriverObject,_In_ PUNICODE_STRING Regi
 
     TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DRIVER, "%!FUNC! Entry");
     TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DRIVER, "%!FUNC! Entry");
+
+	NdisInitializeListHead(&g_globalAdapters);
+	NdisInitializeNPagedLookasideList(
+		&FrameDataLookaside,
+		NULL,
+		NULL,
+		0,  // Reserved for system use
+		0,//sizeof(FRAME),
+		0,//NIC_TAG_FRAME,
+		0); // Reserved for system use
+
+
 
     //
     // Register a cleanup callback so that we can call WPP_CLEANUP when
