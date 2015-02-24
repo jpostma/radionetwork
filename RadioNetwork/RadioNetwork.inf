@@ -88,7 +88,7 @@ KmdfService =  RadioNetwork, RadioNetwork_wdfsect
 KmdfLibraryVersion = $KMDFVERSION$
 
 [Strings]
-ManufacturerName="Johan" ; TODO: add ManufacturerName
+ManufacturerName="Johan"
 ClassName=Radio networks
 DiskName = "RadioNetwork Installation Disk"
 RadioNetwork.DeviceDesc = "RadioNetwork Device"
