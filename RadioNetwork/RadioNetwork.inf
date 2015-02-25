@@ -70,10 +70,10 @@ CopyFiles=RadioNetwork_Device_CoInstaller_CopyFiles
 
 [RadioNetwork_Device_CoInstaller_AddReg]
 HKR,,CoInstallers32,0x00010000, "WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll,WdfCoInstaller"
-HKR,    ,                         BusNumber,           0, "0" 
-HKR, Ndi,                         Service,             0, "NetVMini60"
-HKR, Ndi\Interfaces,              UpperRange,          0, "ndis5"
-HKR, Ndi\Interfaces,              LowerRange,          0, "ethernet"
+;HKR,    ,                         BusNumber,           0, "0" 
+;HKR, Ndi,                         Service,             0, "NetVMini60"
+;HKR, Ndi\Interfaces,              UpperRange,          0, "ndis6"
+;HKR, Ndi\Interfaces,              LowerRange,          0, "ethernet"
 
 
 [RadioNetwork_Device_CoInstaller_CopyFiles]

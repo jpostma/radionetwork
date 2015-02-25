@@ -152,6 +152,15 @@
       <WppKernelMode>true</WppKernelMode>
       <TreatWarningAsError Condition="'$(Configuration)|$(Platform)'=='Vista Debug|x64'">false</TreatWarningAsError>
     </ClCompile>
+    <Link>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Vista Debug|x64'">$(DDK_LIB_PATH)\ndis.lib</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Vista Debug|x64'">tracepdb -f $(OutDir)$(TargetName).pdb -p $(OutDir)</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Vista Release|x64'">tracepdb -f $(OutDir)$(TargetName).pdb -p $(OutDir)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <FilesToPackage Include="$(TargetPath)" />
