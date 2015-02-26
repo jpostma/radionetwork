@@ -7,3 +7,10 @@ Win8*/
 *.sdf
 *.opensdf
 *.mof
+*.pdsbak
+*.workspace
+*.mcs
+*.i
+*.err
+*.o
+*.obj
