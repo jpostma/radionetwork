@@ -1,67 +1,10 @@
-/********************************************************************
- FileName:      main.c
- Dependencies:  See INCLUDES section
- Processor:     PIC18, PIC24, dsPIC, and PIC32 USB Microcontrollers
- Hardware:      This demo is natively intended to be used on Microchip USB demo
-                boards supported by the MCHPFSUSB stack.  See release notes for
-                support matrix.  This demo can be modified for use on other 
-                hardware platforms.
- Complier:      Microchip C18 (for PIC18), XC16 (for PIC24/dsPIC), XC32 (for PIC32)
- Company:       Microchip Technology, Inc.
-
- Software License Agreement:
-
- The software supplied herewith by Microchip Technology Incorporated
- (the "Company") for its PIC(R) Microcontroller is intended and
- supplied to you, the Company's customer, for use solely and
- exclusively on Microchip PIC Microcontroller products. The
- software is owned by the Company and/or its supplier, and is
- protected under applicable copyright laws. All rights are reserved.
- Any use in violation of the foregoing restrictions may subject the
- user to criminal sanctions under applicable laws, as well as to
- civil liability for the breach of the terms and conditions of this
- license.
-
- THIS SOFTWARE IS PROVIDED IN AN "AS IS" CONDITION. NO WARRANTIES,
- WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT NOT LIMITED
- TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. THE COMPANY SHALL NOT,
- IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL OR
- CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
-
-********************************************************************
- File Description:
-
- Change History:
-  Rev   Description
-  ----  -----------------------------------------
-  1.0   Initial release
-
-  2.1   Updated for simplicity and to use common
-        coding style
-
-  2.6   Added support for PIC32MX795F512L & PIC24FJ256DA210
-
-  2.6a  Added support for PIC24FJ256GB210
-
-  2.7   No change
-
-  2.8   Improvements to USBCBSendResume(), to make it easier to use.
-  2.9   Added Support for dsPIC33EP512MU810/PIC24EP512GU810 devices.
-  2.9f  Adding new part support
-  2.9h  Updated to support MS OS Descriptor for plug and play Win 8 experience
-  2.9j  Updates to support new bootloader features (ex: app version 
-        fetching).
-********************************************************************/
-
-/** INCLUDES *******************************************************/
 #include "USB/usb.h"
 #include "USB/usb_function_generic.h"
 
 #include "HardwareProfile.h"
 
 /** CONFIGURATION **************************************************/
-#if defined(PICDEM_FS_USB)      // Configuration bits for PICDEM FS USB Demo Board (based on PIC18F4550)
+#if defined(PICDEM_FS_USB) || defined(__18F4550)      // Configuration bits for PICDEM FS USB Demo Board (based on PIC18F4550)
         #pragma config PLLDIV   = 5         // (20 MHz crystal on PICDEM FS USB board)
         #if (USB_SPEED_OPTION == USB_FULL_SPEED)
             #pragma config CPUDIV   = OSC1_PLL2  
@@ -836,11 +779,6 @@ void UserInit(void)
 void ProcessIO(void)
 {   
     //Blink the LEDs according to the USB device status, but only do so if the PC application isn't connected and controlling the LEDs.
-    if(blinkStatusValid)
-    {
-        BlinkUSBStatus();
-    }
-
     //User Application USB tasks below.
     //Note: The user application should not begin attempting to read/write over the USB
     //until after the device has been fully enumerated.  After the device is fully
@@ -867,6 +805,7 @@ void ProcessIO(void)
         switch(OUTPacket[0])					//Data arrived, check what kind of command might be in the packet of data.
         {
             case 0x80:  //Toggle LED(s) command from PC application.
+#if 0
 		        blinkStatusValid = FALSE;		//Disable the regular LED blink pattern indicating USB state, PC application is controlling the LEDs.
                 if(mGetLED_1() == mGetLED_2())
                 {
@@ -878,6 +817,7 @@ void ProcessIO(void)
                     mLED_1_On();
                     mLED_2_On();
                 }
+#endif
                 break;
             case 0x81:  //Get push button state command from PC application.
 				//Now check to make sure no previous attempts to send data to the host are still pending.  If any attemps are still
@@ -913,97 +853,6 @@ void ProcessIO(void)
         USBGenericOutHandle = USBGenRead(USBGEN_EP_NUM,(BYTE*)&OUTPacket,USBGEN_EP_SIZE);
     }
 }//end ProcessIO
-
-
-/********************************************************************
- * Function:        void BlinkUSBStatus(void)
- *
- * PreCondition:    None
- *
- * Input:           None
- *
- * Output:          None
- *
- * Side Effects:    None
- *
- * Overview:        BlinkUSBStatus turns on and off LEDs 
- *                  corresponding to the USB device state.
- *
- * Note:            mLED macros can be found in HardwareProfile.h
- *                  USBDeviceState is declared and updated in
- *                  usb_device.c.
- *******************************************************************/
-void BlinkUSBStatus(void)
-{
-    static WORD led_count=0;
-    
-    if(led_count == 0)led_count = 10000U;
-    led_count--;
-
-    #define mLED_Both_Off()         {mLED_1_Off();mLED_2_Off();}
-    #define mLED_Both_On()          {mLED_1_On();mLED_2_On();}
-    #define mLED_Only_1_On()        {mLED_1_On();mLED_2_Off();}
-    #define mLED_Only_2_On()        {mLED_1_Off();mLED_2_On();}
-
-    if(USBSuspendControl == 1)
-    {
-        if(led_count==0)
-        {
-            mLED_1_Toggle();
-            if(mGetLED_1())
-            {
-                mLED_2_On();
-            }
-            else
-            {
-                mLED_2_Off();
-            }
-        }//end if
-    }
-    else
-    {
-        if(USBDeviceState == DETACHED_STATE)
-        {
-            mLED_Both_Off();
-        }
-        else if(USBDeviceState == ATTACHED_STATE)
-        {
-            mLED_Both_On();
-        }
-        else if(USBDeviceState == POWERED_STATE)
-        {
-            mLED_Only_1_On();
-        }
-        else if(USBDeviceState == DEFAULT_STATE)
-        {
-            mLED_Only_2_On();
-        }
-        else if(USBDeviceState == ADDRESS_STATE)
-        {
-            if(led_count == 0)
-            {
-                mLED_1_Toggle();
-                mLED_2_Off();
-            }//end if
-        }
-        else if(USBDeviceState == CONFIGURED_STATE)
-        {
-            if(led_count==0)
-            {
-                mLED_1_Toggle();
-                if(mGetLED_1())
-                {
-                    mLED_2_Off();
-                }
-                else
-                {
-                    mLED_2_On();
-                }
-            }//end if
-        }//end if(...)
-    }//end if(UCONbits.SUSPND...)
-
-}//end BlinkUSBStatus
 
 
 

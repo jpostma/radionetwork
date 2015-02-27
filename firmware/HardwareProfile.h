@@ -105,8 +105,5 @@
     #endif
 #endif
 
-#if !defined(DEMO_BOARD)
-    #error "Demo board not defined.  Either define DEMO_BOARD for a custom board or select the correct processor for the demo board."
-#endif
 
 #endif  //HARDWARE_PROFILE_H

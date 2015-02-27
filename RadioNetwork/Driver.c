@@ -1,5 +1,6 @@
 #include "driver.h"
 #include "driver.tmh"
+#include "Adapter.h"
 
 #ifdef ALLOC_PRAGMA
 #pragma alloc_text (INIT, DriverEntry)
@@ -20,22 +21,14 @@ NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT  DriverObject,_In_ PUNICODE_STRING Regi
 	NTSTATUS status;
 	WDF_OBJECT_ATTRIBUTES attributes;
 
-	//
-	// Initialize WPP Tracing
-	//
 	WPP_INIT_TRACING( DriverObject, RegistryPath );
 
 	TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DRIVER, "%!FUNC! Entry");
 
-	// Register a cleanup callback so that we can call WPP_CLEANUP when
-	// the framework driver object is deleted during driver unload.
-	//
 	WDF_OBJECT_ATTRIBUTES_INIT(&attributes);
 	attributes.EvtCleanupCallback = RadioNetworkEvtDriverContextCleanup;
 
-	WDF_DRIVER_CONFIG_INIT(&config,
-		RadioNetworkEvtDeviceAdd
-		);
+	WDF_DRIVER_CONFIG_INIT(&config,RadioNetworkEvtDeviceAdd);
 
 	TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DRIVER, "%!FUNC! Entry");
 	status = WdfDriverCreate(DriverObject,
@@ -64,25 +57,25 @@ NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT  DriverObject,_In_ PUNICODE_STRING Regi
 
 	g_MiniportCharacteristics.Flags = 0;
 
-#if 0
-	g_MiniportCharacteristics.SetOptionsHandler = MPSetOptions; // Optional
+	//g_MiniportCharacteristics.SetOptionsHandler = MPSetOptions; // Optional
 	g_MiniportCharacteristics.InitializeHandlerEx = MPInitializeEx;
 	g_MiniportCharacteristics.HaltHandlerEx = MPHaltEx;
-	g_MiniportCharacteristics.UnloadHandler = DriverUnload;
+	//g_MiniportCharacteristics.UnloadHandler = DriverUnload;
 	g_MiniportCharacteristics.PauseHandler = MPPause;
 	g_MiniportCharacteristics.RestartHandler = MPRestart;
-	g_MiniportCharacteristics.OidRequestHandler = MPOidRequest;
+	//g_MiniportCharacteristics.OidRequestHandler = MPOidRequest;
+#if 0
 	g_MiniportCharacteristics.SendNetBufferListsHandler = MPSendNetBufferLists;
 	g_MiniportCharacteristics.ReturnNetBufferListsHandler = MPReturnNetBufferLists;
 	g_MiniportCharacteristics.CancelSendHandler = MPCancelSend;
+	g_MiniportCharacteristics.CancelOidRequestHandler = MPCancelOidRequest;
+#endif
 	g_MiniportCharacteristics.CheckForHangHandlerEx = MPCheckForHangEx;
 	g_MiniportCharacteristics.ResetHandlerEx = MPResetEx;
 	g_MiniportCharacteristics.DevicePnPEventNotifyHandler = MPDevicePnpEventNotify;
 	g_MiniportCharacteristics.ShutdownHandlerEx = MPShutdownEx;
-	g_MiniportCharacteristics.CancelOidRequestHandler = MPCancelOidRequest;
 
 	status = NdisMRegisterMiniportDriver(DriverObject,RegistryPath,NULL,&g_MiniportCharacteristics,&g_miniPortHandle);
-#endif
 	return status;
 }
 

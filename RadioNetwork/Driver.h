@@ -20,10 +20,10 @@ Environment:
 #include <wdf.h>
 
 
+#if 0
 #define MP_NDIS_MAJOR_VERSION             6
 #define MP_NDIS_MINOR_VERSION             0
-#define NDIS60_MINIPORT 1
-#define NDIS_MINIPORT_DRIVER 1
+#endif
 
 #include <ndis.h>
 

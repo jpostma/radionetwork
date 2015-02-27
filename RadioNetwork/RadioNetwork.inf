@@ -36,6 +36,7 @@ RadioNetwork.sys  = 1,,
 %ManufacturerName%=Standard,NT$ARCH$
 
 [Standard.NT$ARCH$]
+%RadioNetwork.DeviceDesc%=RadioNetwork_Device, USB\VID_04D8&PID_0053
 %RadioNetwork.DeviceDesc%=RadioNetwork_Device, Root\RadioNetwork ; TODO: edit hw-id
 
 [RadioNetwork_Device.NT]

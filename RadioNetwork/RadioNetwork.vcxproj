@@ -54,11 +54,13 @@
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Adapter.c" />
     <ClCompile Include="Device.c" />
     <ClCompile Include="Driver.c" />
     <ClCompile Include="Queue.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Adapter.h" />
     <ClInclude Include="Device.h" />
     <ClInclude Include="Driver.h" />
     <ClInclude Include="Public.h" />
@@ -151,6 +153,7 @@
       <WppScanConfigurationData Condition="'%(ClCompile. ScanConfigurationData)'  == ''">trace.h</WppScanConfigurationData>
       <WppKernelMode>true</WppKernelMode>
       <TreatWarningAsError Condition="'$(Configuration)|$(Platform)'=='Vista Debug|x64'">false</TreatWarningAsError>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Vista Debug|x64'">NDIS60_MINIPORT;NDIS_MINIPORT_DRIVER;MP_NDIS_MAJOR_VERSION=6;MP_NDIS_MINOR_VERSION=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Vista Debug|x64'">$(DDK_LIB_PATH)\ndis.lib</AdditionalDependencies>
